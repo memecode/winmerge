@@ -9,7 +9,7 @@
 #include "OptionsPanel.h"
 #include "UnicodeString.h"
 #include "SubeditList.h"
-#include "ccrystaltextview.h"
+#include "CCrystalTextView.h"
 
 class COptionsMgr;
 

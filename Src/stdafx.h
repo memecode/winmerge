@@ -122,7 +122,7 @@ private:
 public:
 	explicit CWinMergeProfile(const tchar_t* pFuncName) {
 		tchar_t buf[256];
-		_stprintf_s(buf, _T("%-*s funcname=%s Start\n"), level, L"", pFuncName);
+		_stprintf_s(buf, 256, _T("%-*s funcname=%s Start\n"), level, "", pFuncName);
 		OutputDebugString(buf);
 		lstrcpy(funcname, pFuncName);
 		QueryPerformanceFrequency(&freq);
@@ -153,7 +153,7 @@ public:
 		}
 		pstat->sum += elapsed;
 		pstat->count++;
-		_stprintf_s(buf, _T("%-*s funcname=%s t=%d[us] count=%d sum=%d[us] time=%g[ms]\n"), level, L"", funcname, elapsed, pstat->count, pstat->sum, tim/1000.0);
+		_stprintf_s(buf, 256, _T("%-*s funcname=%s t=%d[us] count=%d sum=%d[us] time=%g[ms]\n"), level, "", funcname, elapsed, pstat->count, pstat->sum, tim/1000.0);
 		OutputDebugString(buf);
 	}
 	static void ResetTimer()

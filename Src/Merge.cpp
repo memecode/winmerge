@@ -73,7 +73,9 @@
 #include "ColorSchemes.h"
 #include "CrashLogger.h"
 #include "FileSaveHelper.h"
+#ifdef _WIN32
 #include <../src/mfc/afximpl.h>
+#endif
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

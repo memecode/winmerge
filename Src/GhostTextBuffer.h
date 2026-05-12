@@ -6,7 +6,7 @@
 #pragma once
 
 #include <vector>
-#include "ccrystaltextbuffer.h"
+#include "CCrystalTextBuffer.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
