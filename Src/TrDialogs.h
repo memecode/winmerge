@@ -74,7 +74,9 @@ public:
 		for (const auto& item : list)
 		{
 			cbo->AddString(item.first.c_str());
-			if (item.second == sel)
+			
+			std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+			if (converter.to_bytes(item.second) == sel)
 				cbo->SetCurSel(i);
 			cbo->SetItemDataPtr(i++, reinterpret_cast<void*>(const_cast<wchar_t*>(item.second)));
 		}

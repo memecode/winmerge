@@ -2,18 +2,20 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
+#include <locale>
+#include <codecvt>
 
 #define __AFXWIN_H__ 1
 
-#define WM_USER 1000
 #define DECLARE_DYNAMIC(cls)
 #define DECLARE_MESSAGE_MAP()
 #define DECLARE_DYNCREATE(cls)
 #define NTAPI
-#define NULL 0
+#define AFXAPI
 
 #ifndef afx_msg
-#define afx_msg         // intentional placeholder
+#define afx_msg
 #endif
 
 #define sprintf_s snprintf
@@ -21,48 +23,7 @@
 #define lstrcpy strcpy
 #define ASSERT assert
 
-typedef bool BOOL;
-typedef const char *LPCTSTR;
-typedef unsigned int UINT;
-typedef long LONG;
-typedef unsigned int DWORD;
-typedef int64_t LONG_PTR;
-typedef int64_t INT_PTR;
-typedef uint64_t UINT_PTR;
-typedef LONG_PTR LRESULT;
-typedef LONG_PTR LPARAM;
-typedef UINT_PTR WPARAM;
-typedef DWORD COLORREF;
-typedef DWORD *LPCOLORREF;
-typedef void *LPVOID;
-typedef long long LONGLONG;
-typedef uint8_t BYTE;
-typedef char CHAR;
-typedef char tchar_t;
-
-typedef void *HMENU;
-typedef void *HWND;
-typedef void *HICON;
-typedef void *HBRUSH;
-typedef void *HINSTANCE;
-
-#define LF_FACESIZE 32
-typedef struct tagLOGFONTA {
-  LONG lfHeight;
-  LONG lfWidth;
-  LONG lfEscapement;
-  LONG lfOrientation;
-  LONG lfWeight;
-  BYTE lfItalic;
-  BYTE lfUnderline;
-  BYTE lfStrikeOut;
-  BYTE lfCharSet;
-  BYTE lfOutPrecision;
-  BYTE lfClipPrecision;
-  BYTE lfQuality;
-  BYTE lfPitchAndFamily;
-  CHAR lfFaceName[LF_FACESIZE];
-} LOGFONT, LOGFONTA, *PLOGFONTA, *NPLOGFONTA, *LPLOGFONTA;
+#include "windows.h"
 
 enum CWindowStyles
 {
@@ -96,11 +57,9 @@ struct CSize
 	}
 };
 
-class CRect
+class CRect : public RECT
 {
-	LONG left, top, right, bottom;
 };
-typedef CRect *LPRECT;
 
 class CObject
 {
@@ -111,6 +70,8 @@ struct CString
 	CString(const char *init = nullptr)
 	{
 	}
+	
+	const char *GetString() const;
 };
 
 class CPtrArray : public CObject
@@ -121,11 +82,21 @@ class CDC : public CObject
 {
 };
 
-class CWnd
+class CCmdTarget : public CObject
 {
 };
 
+class CWnd : public CCmdTarget
+{
+public:
+	void SetRedraw( BOOL bRedraw = TRUE );
+};
+
 class CDialog : public CWnd
+{
+};
+
+class CPropertyPage : public CDialog
 {
 };
 
@@ -135,6 +106,8 @@ class CFrameWnd : public CWnd
 
 class CMDIChildWnd : public CFrameWnd
 {
+protected:
+	HMENU m_hMenuShared = nullptr;
 };
 
 class CDockBar : public CWnd
@@ -142,6 +115,10 @@ class CDockBar : public CWnd
 };
 
 class CControlBar : public CWnd
+{
+};
+
+class CDialogBar : public CControlBar
 {
 };
 
@@ -202,10 +179,6 @@ struct CWinApp
 	virtual HINSTANCE LoadAppLangResourceDLL();
 };
 
-class CCmdTarget : public CObject
-{
-};
-
 class CDocTemplate : public CCmdTarget
 {
 };
@@ -222,6 +195,59 @@ class CDocument
 {
 };
 
+class CComboBox : public CWnd
+{
+public:
+	int AddString(LPCTSTR lpszString);
+
+	int GetCurSel() const;
+	int SetCurSel(int nSelect);
+
+	void* GetItemDataPtr(int nIndex) const;
+	int SetItemDataPtr(int nIndex, void* pData);
+};
+
+class CComboBoxEx : public CComboBox
+{
+};
+
+class CEdit : public CWnd
+{
+};
+
+template<class KEY, class ARG_KEY, class VALUE, class ARG_VALUE>
+class CMap : public CObject
+{
+};
+
+class CDataExchange
+{
+};
+
+class CGdiObject : public CObject
+{
+};
+
+class CBrush : public CGdiObject
+{
+};
+
+class CMenu : public CObject
+{
+};
+
+class CView : public CWnd
+{
+};
+
+class CScrollView : public CView
+{
+};
+
+class CFormView : public CScrollView
+{
+};
+
 namespace ATL
 {
 	struct CImage
@@ -229,21 +255,19 @@ namespace ATL
 	};
 };
 
-typedef union _LARGE_INTEGER {
-  struct {
-    DWORD LowPart;
-    LONG  HighPart;
-  } DUMMYSTRUCTNAME;
-  struct {
-    DWORD LowPart;
-    LONG  HighPart;
-  } u;
-  LONGLONG QuadPart;
-} LARGE_INTEGER;
 
+extern void AFXAPI DDX_Text(
+    CDataExchange* pDX,
+    int nIDC,
+    CString& value);
+    
+extern void AFXAPI DDX_CBString(
+    CDataExchange* pDX,
+    int nIDC,
+    CString& value);
 
-extern void OutputDebugString(const char *str);
-extern BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency);
-extern BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount);
-extern LONG InterlockedIncrement(LONG volatile *Addend);
-extern LONG InterlockedDecrement(LONG volatile *Addend);
+extern void AFXAPI DDX_CBStringExact(
+    CDataExchange* pDX,
+    int nIDC,
+    CString& value);
+    
